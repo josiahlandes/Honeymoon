@@ -1,0 +1,12 @@
+# private planning docs — never publish
+honeymoon-hq.md
+DESIGN-NOTES.md
+archive/
+
+# local tooling
+.claude/
+.DS_Store
+
+# plaintext itinerary + encryptor stay local — the site ships schedule-data.enc.json
+schedule-data.js
+encrypt-data.mjs
