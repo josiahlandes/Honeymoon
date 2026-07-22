@@ -16,8 +16,8 @@ Every photo on this site is a freely licensed image from Wikimedia Commons, down
 | thu-sea-cave.jpg | Day 3 · kayak | La Jolla sea cave | La Jolla 005 - sea cave.jpg | Andrek02 | CC0 |
 | thu-cove-sealions.jpg | Day 3 · cove | Sea lions on a rock, the cove & village behind | La Jolla Shores view.jpg | Dirk Hansen | CC BY-SA 3.0 |
 | thu-cove-south.jpg | Day 3 · shores | La Jolla Cove from the south | La Jolla Cove from the south.JPG | Invertzoo | CC BY-SA 3.0 |
-| thu-soledad-view.jpg | Day 3 · Soledad | View from Mount Soledad over La Jolla | Mount Soledad - Viewing Coast to the North 1.jpg | Z3lvs | CC0 |
-| thu-desserts.jpg | Day 3 · nightcap | Plated meringue dessert at Extraordinary Desserts | Extraordinary Desserts (44120443820).jpg | Prayitno (Flickr) | CC BY 2.0 |
+| thu-soledad-view.jpg | (unused — Soledad cut 7/22) | View from Mount Soledad over La Jolla | Mount Soledad - Viewing Coast to the North 1.jpg | Z3lvs | CC0 |
+| thu-desserts.jpg | (unused — nightcap cut 7/22) | Plated meringue dessert at Extraordinary Desserts | Extraordinary Desserts (44120443820).jpg | Prayitno (Flickr) | CC BY 2.0 |
 | fri-panda.jpg | Day 4 opener | Giant panda Yun Zi in the bamboo, San Diego Zoo | Yun zi love bamboo - San Diego Zoo (7824950458).jpg | Tim Evanson | CC BY-SA 2.0 |
 | fri-flamingos.jpg | Day 4 · zoo | Flamingos at the entrance pond, San Diego Zoo | Flamingos @ San Diego ZOO - panoramio.jpg | Alen Ištoković | CC BY 3.0 |
 | fri-botanical.jpg | Day 4 · rest | Botanical Building & lily pond, Balboa Park | Front view of the Botanical Building in Balboa Park, San Diego dllu.jpg | Dllu | CC BY-SA 4.0 |
@@ -26,7 +26,7 @@ Every photo on this site is a freely licensed image from Wikimedia Commons, down
 | sat-hotel-del.jpg | Day 5 · wide open | Hotel del Coronado (aerial) | Hotel Del Coronado Drone Picture Turf Lawn.jpg | Armandoartist | CC BY-SA 4.0 |
 | sat-sunset-cliffs.jpg | Day 5 · finale | Sunset Cliffs at sunset | Sunset Cliffs, San Diego, United States (Unsplash).jpg | Tyler Mullins (Unsplash) | CC0 |
 
-Three panels (Allegro, Mister A's, the Spider-Man matinee) intentionally have no photo yet — they render as typographic title cards until personal photos replace them.
+Photo-less events (Allegro dinner, the burrito breakfast, Tuesday's relax block, Saturday's coffee hunt) render as typographic title cards until personal photos replace them.
 
 ## 3D models (reveal page)
 
