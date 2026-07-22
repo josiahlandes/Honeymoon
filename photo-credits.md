@@ -2,7 +2,7 @@
 
 The site's photos live in `photos/` and come from two sources:
 
-1. **Personal photos** — numeric filenames (`photos/1002.jpg` = day 1, slot 2; slot 1 is the day's opener, events follow in order). © Katie & Josiah, all rights reserved; EXIF (including GPS) stripped before publishing. Originals stay in the local `Updated Photos/` folder, which is gitignored.
+1. **Personal photos** — numeric filenames (exception: `5003.jpg` is the *Spider-Man: Brand New Day* theatrical one-sheet, © Sony Pictures / Marvel — promotional material on a personal, password-gated page) (`photos/1002.jpg` = day 1, slot 2; slot 1 is the day's opener, events follow in order). © Katie & Josiah, all rights reserved; EXIF (including GPS) stripped before publishing. Originals stay in the local `Updated Photos/` folder, which is gitignored.
 2. **Wikimedia Commons images** — the remaining freely licensed placeholders below. CC BY / CC BY-SA require this attribution to stay with the site. Originals at `https://commons.wikimedia.org/wiki/File:<Commons filename with underscores>`.
 
 | Local file | Where it appears | Subject | Commons filename | Author | License |
