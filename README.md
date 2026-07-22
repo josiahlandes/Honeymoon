@@ -8,9 +8,9 @@ Live at **https://katieandjosiah.info** via GitHub Pages (this repo, branch `mai
 - **`index.html`** — "the reel": cinematic day chapters that pin and pan horizontally as you
   scroll (CSS scroll-driven animations with a rAF fallback; fully vertical layout under
   `prefers-reduced-motion`). Renders entirely from the itinerary data at runtime.
-- **`katie-schedule.html`** — the week at a glance, and the control room: flexible events
-  reorder with ↑/↓ arrows, Reserved events stay pinned, changes persist per-device via
-  `localStorage` and re-flow the reel on next load.
+- **`katie-schedule.html`** — the week at a glance: six static day cards, one row per
+  event. Deliberately read-only (the reordering UI was removed in July 2026); the week
+  presents as settled, with no booking-status labels anywhere on the site.
 - **`gate.js`** — the password gate. The itinerary ships **encrypted** as
   `schedule-data.enc.json` (AES-256-GCM; key derived from the site password with
   PBKDF2-SHA256, 200k iterations). The gate decrypts in the browser, executes the data
@@ -62,7 +62,8 @@ Local preview: serve over http (e.g. `python3 -m http.server 8742`, or the
 
 ## Content rules (enforced across the site)
 
-1. Locked (`locked: true`) events are immovable and carry the "Reserved" stamp.
+1. No booking-status labels ("Reserved"/"Flexible") and no reordering UI — the week
+   presents as settled. (`locked:` in the data is planning truth only, never rendered.)
 2. No prices or dollar amounts anywhere on the site.
 3. Planning-only notes never leave the local machine.
 

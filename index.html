@@ -256,23 +256,9 @@ a{color:inherit}
   color:var(--dacc);
 }
 .panel.type .ev-title{font-size:clamp(27px,3.3vw,46px);margin-top:14px}
-.panel.type .stamp{
-  position:static;display:inline-block;margin-top:22px;transform:rotate(-2deg);
-}
 .big-clock{
   font-family:var(--serif);font-style:italic;font-weight:500;
   font-size:clamp(15px,1.5vw,19px);color:var(--dacc);margin-top:18px;
-}
-
-/* reserved stamp */
-.stamp{
-  position:absolute;top:clamp(70px,11vh,96px);right:clamp(18px,4vw,44px);z-index:3;
-  font-size:10px;font-weight:650;letter-spacing:.3em;text-transform:uppercase;
-  font-stretch:115%;
-  color:var(--dacc);border:1px solid color-mix(in oklab, var(--dacc) 72%, transparent);
-  border-radius:2px;padding:8px 13px 8px 16px;transform:rotate(3deg);
-  background:color-mix(in oklab, var(--night) 55%, transparent);
-  -webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);
 }
 
 /* ---------- coda (final day) + footer ---------- */
@@ -306,15 +292,9 @@ a{color:inherit}
   font-family:var(--serif);font-weight:560;font-size:clamp(21px,2.4vw,28px);line-height:1.15;
 }
 .coda-ev .cd{grid-column:2;color:var(--dim);font-weight:300;font-size:15px;max-width:52ch}
-.coda-ev .mini-stamp{
-  grid-column:2;justify-self:start;margin-top:10px;
-  font-size:9.5px;font-weight:650;letter-spacing:.28em;text-transform:uppercase;
-  color:var(--dacc);border:1px solid color-mix(in oklab, var(--dacc) 60%, transparent);
-  border-radius:2px;padding:5px 10px;
-}
 @media (max-width:600px){
   .coda-ev{grid-template-columns:1fr}
-  .coda-ev .ev-time,.coda-ev h3,.coda-ev .cd,.coda-ev .mini-stamp{grid-column:1}
+  .coda-ev .ev-time,.coda-ev h3,.coda-ev .cd{grid-column:1}
 }
 
 .footer{
@@ -472,9 +452,6 @@ a{color:inherit}
   .ev-time,.day-eyebrow,.eyebrow,.hero-meta,.ev-meta{color:#555}
   .day-eyebrow::before{background:#999}
   .ev-desc,.day-tag,.hero-sub,.footer p,.coda-ev .cd{color:#333}
-  .stamp,.mini-stamp{position:static;display:inline-block;margin-top:10px;
-    color:#444;border-color:#999;background:none;transform:none;
-    -webkit-backdrop-filter:none;backdrop-filter:none}
   .homebase{color:#555;border-color:#ccc}
   .coda-ev{border-color:#ddd}
   .coda-inner{text-align:left}
@@ -504,7 +481,7 @@ a{color:inherit}
     <p class="eyebrow">The Official Honeymoon Itinerary</p>
     <h1>San Diego <span class="for">for Katie</span></h1>
     <p class="hero-sub">Six days. Five sunsets. Two newlyweds. One suspiciously well-organized husband.</p>
-    <p class="hero-meta"><b id="hero-dates"></b> <span id="hero-legend"></span></p>
+    <p class="hero-meta"><b id="hero-dates"></b></p>
   </div>
   <div class="scroll-cue" aria-hidden="true">scroll</div>
 </section>
@@ -521,10 +498,10 @@ a{color:inherit}
 
   <footer class="footer">
     <h2 class="rise">That's the plan, Mrs.</h2>
-    <p class="rise">Everything marked <em>Reserved</em> is booked and set in stone. Everything else bends to your will — rearrange the week right on the schedule page, or dream up something better and just say the word.</p>
+    <p class="rise">Six days, booked and built with love. And if you dream up something better along the way — just say the word.</p>
     <p class="xoxo rise">xoxo, your husband</p>
     <div class="rise">
-      <a class="sched-cta" href="katie-schedule.html">See &amp; reshuffle the whole week</a>
+      <a class="sched-cta" href="katie-schedule.html">The whole week, at a glance</a>
     </div>
     <div class="rise"><span class="homebase" id="homebase"></span></div>
     <p class="rise" style="margin-top:18px"><a href="photo-credits.md" style="font-size:10.5px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--faint);text-decoration:underline;text-underline-offset:3px">Photo credits</a></p>
@@ -535,7 +512,7 @@ a{color:inherit}
 window.__boot = () => {
   const H = window.HONEYMOON;
   if (!H) return;
-  const DAYS = H.orderedDays();
+  const DAYS = H.days;
   const NUMWORD = ["One","Two","Three","Four","Five","Six","Seven","Eight","Nine","Ten"];
   const pad = i => String(i + 1).padStart(2, "0");
   const esc = s => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;")
@@ -556,15 +533,12 @@ window.__boot = () => {
   const heroImg = document.getElementById("hero-img");
   heroImg.src = H.img(H.meta.heroPhoto, 2200);
   document.getElementById("hero-dates").textContent = H.meta.dates;
-  document.getElementById("hero-legend").textContent = H.meta.legend;
   document.getElementById("homebase").textContent = H.meta.homebase;
 
   /* ---- panel builders ---- */
-  const metaHTML = ev => {
-    const items = [...ev.meta, ...(ev.locked ? [] : ["Flexible"])];
-    return items.length
-      ? `<p class="ev-meta">${items.map(m => `<span>${esc(m)}</span>`).join("")}</p>` : "";
-  };
+  const metaHTML = ev =>
+    ev.meta.length
+      ? `<p class="ev-meta">${ev.meta.map(m => `<span>${esc(m)}</span>`).join("")}</p>` : "";
 
   const openerHTML = (day, i) => `
     <article class="panel opener${day.opener ? "" : " noimg"}">
@@ -580,7 +554,6 @@ window.__boot = () => {
   const eventHTML = ev => ev.photo ? `
     <article class="panel photo">
       <div class="ph"><img loading="lazy" src="${esc(H.img(ev.photo, 1400))}" alt="${esc(ev.photo.alt || "")}"></div>
-      ${ev.locked ? `<span class="stamp">Reserved</span>` : ""}
       <div class="ev-copy">
         <p class="ev-time">${esc(ev.time)}</p>
         <h3 class="ev-title">${esc(ev.title)}</h3>
@@ -595,7 +568,6 @@ window.__boot = () => {
         <p class="ev-desc">${esc(ev.desc)}</p>
         ${ev.flourish ? `<p class="big-clock">${esc(ev.flourish)}</p>` : ""}
         ${metaHTML(ev)}
-        ${ev.locked ? `<span class="stamp">Reserved</span>` : ""}
       </div>
     </article>`;
 
@@ -630,7 +602,6 @@ window.__boot = () => {
         <p class="ev-time">${esc(ev.time)}</p>
         <h3>${esc(ev.title)}</h3>
         <p class="cd">${esc(ev.desc)}</p>
-        ${ev.locked ? `<span class="mini-stamp">${esc(ev.stampNote || "Reserved")}</span>` : ""}
       </div>`).join("")}`;
   } else {
     codaSec.dataset.zone = "hero";
