@@ -66,7 +66,7 @@
   }
   #subtitle b { font-weight: 600; } /* per-day accent set from JS */
   #corner { bottom: 18px; left: 18px; display: flex; gap: 10px; }
-  #replay, #skip {
+  #replay {
     font-family: 'Archivo', system-ui, sans-serif; font-size: 11px; font-weight: 600;
     letter-spacing: 0.16em; text-transform: uppercase;
     color: rgba(242,237,227,0.5); background: rgba(12,17,22,0.55);
@@ -74,8 +74,8 @@
     padding: 9px 16px; cursor: pointer; text-decoration: none;
     transition: color 0.3s, border-color 0.3s;
   }
-  #replay:hover, #skip:hover { color: #DFAE5A; border-color: rgba(223,174,90,0.5); }
-  #replay:focus-visible, #skip:focus-visible, #schedule-btn:focus-visible { outline: 2px solid #DFAE5A; outline-offset: 3px; }
+  #replay:hover { color: #DFAE5A; border-color: rgba(223,174,90,0.5); }
+  #replay:focus-visible, #schedule-btn:focus-visible { outline: 2px solid #DFAE5A; outline-offset: 3px; }
   #sig {
     bottom: 20px; right: 24px; font-family: 'Bodoni Moda', 'Didot', serif; font-style: italic; font-weight: 550;
     font-size: 17px; color: rgba(223,174,90,0.55); pointer-events: none;
@@ -104,10 +104,9 @@
 </div>
 <div class="ui" id="corner">
   <button id="replay" title="Start over">&#8634; Replay</button>
-  <a id="skip" href="../">Skip to the plan &rarr;</a>
 </div>
 <div class="ui" id="sig">xoxo, your husband</div>
-<a class="ui" id="schedule-btn" href="../">Now &mdash; the whole plan &rarr;</a>
+<a class="ui" id="schedule-btn" href="../">See the whole amazing plan &rarr;</a>
 
 <script type="module">
 import * as THREE from 'three';
@@ -1191,7 +1190,7 @@ function reveal(rec) {
         tiles[nextIndex].state = 'next';
         sub.innerHTML = `Now&hellip; <b style="color:${accHex(nextIndex)}">${DAYS[nextIndex].day}</b>`;
       } else {
-        sub.innerHTML = 'That&rsquo;s the plan, <b style="color:#DFAE5A">Mrs.</b>';
+        sub.innerHTML = '';
         tween(0.05, () => {}, { delay: 0.55, done: () => { fanfare(); rainConfetti(); btn.classList.add('show'); } });
       }
     },
