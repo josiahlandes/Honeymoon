@@ -160,14 +160,41 @@
     }
   }
 
+  const CODE_CACHE = "kj-code"; /* sessionStorage: {iv, code} — decrypted
+    data for this tab, so page-to-page navigation boots instantly with
+    no veil at all (the device already holds the key in localStorage) */
+  const cacheCode = (enc, code) => {
+    try { sessionStorage.setItem(CODE_CACHE, JSON.stringify({ iv: enc.iv, code })); } catch (e) {}
+  };
+
   document.addEventListener("DOMContentLoaded", async () => {
-    /* hide page content immediately, but do NOT paint the gate UI yet —
-       returning devices unlock silently, and building the lock screen
-       up front made it flash during page-to-page navigations */
-    document.documentElement.classList.add("kj-locked");
     const style = document.createElement("style");
     style.textContent = CSS;
     document.head.appendChild(style);
+
+    /* fast path: this tab has already decrypted the itinerary — boot
+       immediately (no lock veil, no network wait), then re-check in the
+       background that the published data hasn't changed underneath us */
+    let cached = null;
+    try { cached = JSON.parse(sessionStorage.getItem(CODE_CACHE) || "null"); } catch (e) {}
+    if (cached && cached.code) {
+      boot(cached.code, null);
+      fetch(BASE + "schedule-data.enc.json").then(r => r.json()).then(async enc => {
+        if (enc.iv === cached.iv) return;
+        sessionStorage.removeItem(CODE_CACHE);
+        const saved = localStorage.getItem(KEY_STORE);
+        if (!saved) return;
+        try {
+          const key = await crypto.subtle.importKey("raw", b64d(saved), "AES-GCM", false, ["decrypt"]);
+          cacheCode(enc, await decryptWith(key, enc)); /* fresh on next nav */
+        } catch (e) { localStorage.removeItem(KEY_STORE); }
+      }).catch(() => {});
+      return;
+    }
+
+    /* hide page content while we work; the visible gate UI is built
+       lazily only if it's truly needed */
+    document.documentElement.classList.add("kj-locked");
 
     let enc = null;
 
@@ -188,6 +215,7 @@
           const key = await keyFromPassword(input.value, enc);
           const code = await decryptWith(key, enc);   // GCM throws on a wrong key
           try { localStorage.setItem(KEY_STORE, b64e(await crypto.subtle.exportKey("raw", key))); } catch (e) {}
+          cacheCode(enc, code);
           /* the Admit Two stamp gets its beat, then the curtain lifts —
              a fresh login is routed into the reveal ceremony when the
              page asks for it; otherwise unlock in place */
@@ -218,7 +246,9 @@
     if (saved) {
       try {
         const key = await crypto.subtle.importKey("raw", b64d(saved), "AES-GCM", false, ["decrypt"]);
-        return boot(await decryptWith(key, enc), null);
+        const code = await decryptWith(key, enc);
+        cacheCode(enc, code);
+        return boot(code, null);
       } catch (e) { localStorage.removeItem(KEY_STORE); }
     }
     buildGate().input.focus();
