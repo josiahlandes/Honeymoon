@@ -89,9 +89,12 @@ a{color:inherit}
 .sched-link:focus-visible,.tick:focus-visible,.wordmark:focus-visible{
   outline:2px solid var(--acc);outline-offset:3px;
 }
+.top-left{display:flex;align-items:center;gap:14px;min-width:0}
 @media (max-width:640px){
   .rail{display:none}
   .top{padding:12px 16px}
+  .reveal-link .rv-text{display:none}
+  .reveal-link{padding:9px 12px}
 }
 
 /* pure-CSS page progress bar */
@@ -489,7 +492,10 @@ a{color:inherit}
 <div class="grain" aria-hidden="true"></div>
 
 <header class="top">
-  <a class="wordmark" href="#top">Katie <span class="amp">&amp;</span> Josiah</a>
+  <div class="top-left">
+    <a class="sched-link reveal-link" href="reveal/" aria-label="Replay the reveal"><span class="rv-icon">&#8634;</span><span class="rv-text">&nbsp;The Reveal</span></a>
+    <a class="wordmark" href="#top">Katie <span class="amp">&amp;</span> Josiah</a>
+  </div>
   <nav class="rail" id="rail" aria-label="Days of the week"></nav>
   <a class="sched-link" href="katie-schedule.html">The Schedule</a>
 </header>
