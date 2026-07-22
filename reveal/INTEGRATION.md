@@ -66,3 +66,14 @@ Add to the photo-credits page:
 - Rename keys in `GLB_URLS` or move `assets/` relative to index.html.
 - Strip the import-map `integrity` block unless upgrading the pinned three.js version.
 - Add `scrollIntoView` or global scroll code — the page is a fixed viewport scene.
+
+## Retheme (July 2026, post-integration)
+
+Rethemed to the main site's design system: Bodoni Moda + Archivo (was Cormorant/Jost),
+site gold `#DFAE5A` / ivory `#F2EDE3`, film-grain overlay + warm top stage light, pill
+buttons (Replay / new "Skip to the plan" escape hatch), and the reel's six per-day accent
+colors (`ACCENTS` const, Tue→Sun) driving tile trims, emissive pulses, revealed label
+colors, burst confetti, the subtitle day names, and a rim-light sweep per reveal. Finale
+confetti mixes champagne with all six accents. Also added: Enter/Space reveals the next
+day (keyboard access), focus-visible outlines, and pointer parallax is disabled under
+prefers-reduced-motion. The GLB keys, loader, and behavior contract are untouched.

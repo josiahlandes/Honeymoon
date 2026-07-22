@@ -8,7 +8,7 @@
 <title>Katie's Honeymoon · The Reveal</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Jost:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..800;1,6..96,400..800&family=Archivo:ital,wdth,wght@0,62..125,200..800;1,62..125,200..800&display=swap" rel="stylesheet">
 <script type="importmap">
 {
   "imports": {
@@ -31,61 +31,81 @@
 <style>
   html, body { margin: 0; height: 100%; overflow: hidden; }
   body {
-    background: radial-gradient(120% 95% at 50% 0%, #182230 0%, #101823 48%, #0C1116 100%);
-    font-family: "Jost", sans-serif;
+    background: radial-gradient(120% 95% at 50% 0%, #1A2430 0%, #101720 48%, #0C1116 100%);
+    font-family: 'Archivo', system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
   }
-  a { color: #D8B26E; } a:hover { color: #E8CB94; }
+  body::before { /* the site's warm stage light */
+    content: ""; position: fixed; inset: 0; z-index: 1; pointer-events: none;
+    background: radial-gradient(90% 42% at 50% -6%, rgba(223,174,90,0.10), transparent 62%);
+  }
+  #grain {
+    position: fixed; inset: -40px; z-index: 40; pointer-events: none; opacity: 0.05;
+    background-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='240'%20height='240'%3E%3Cfilter%20id='n'%3E%3CfeTurbulence%20type='fractalNoise'%20baseFrequency='0.9'%20numOctaves='2'%20stitchTiles='stitch'/%3E%3CfeColorMatrix%20type='saturate'%20values='0'/%3E%3C/filter%3E%3Crect%20width='240'%20height='240'%20filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 240px 240px;
+  }
+  a { color: #DFAE5A; }
   #stage { position: fixed; inset: 0; }
   canvas { display: block; }
   .ui { position: fixed; z-index: 5; }
   #title { top: 5vh; left: 0; right: 0; text-align: center; pointer-events: none; }
   #eyebrow {
-    margin: 0 0 10px; font-size: 12px; font-weight: 500; letter-spacing: 0.34em;
-    text-transform: uppercase; color: #B9945C;
+    margin: 0 0 12px; display: flex; align-items: center; justify-content: center; gap: 14px;
+    font-size: 10.5px; font-weight: 600; letter-spacing: 0.3em;
+    text-transform: uppercase; color: rgba(242,237,227,0.6);
   }
+  #eyebrow::before, #eyebrow::after { content: ""; width: 34px; height: 1px; background: #DFAE5A; flex: none; }
   #title h1 {
-    margin: 0; font-family: "Cormorant Garamond", serif; font-weight: 600;
-    font-size: clamp(38px, 5.2vw, 72px); letter-spacing: 0.01em; color: #F2E8D8; line-height: 1.05;
+    margin: 0; font-family: 'Bodoni Moda', 'Didot', serif; font-weight: 475;
+    font-size: clamp(38px, 5.2vw, 76px); letter-spacing: 0.005em; color: #F2EDE3; line-height: 1.02;
   }
-  #title h1 em { font-style: italic; color: #D8B26E; }
+  #title h1 em { font-style: italic; font-weight: 500; color: #DFAE5A; }
   #subtitle {
-    margin: 12px 0 0; font-size: clamp(14px, 1.3vw, 18px); font-weight: 300;
-    color: rgba(242, 232, 216, 0.62); letter-spacing: 0.06em;
+    margin: 14px 0 0; font-size: clamp(13.5px, 1.25vw, 16.5px); font-weight: 300;
+    color: rgba(242,237,227,0.64); letter-spacing: 0.02em;
   }
-  #subtitle b { color: #D8B26E; font-weight: 500; }
-  #replay {
-    bottom: 18px; left: 18px; font-family: "Jost", sans-serif; font-size: 12px; font-weight: 500;
-    letter-spacing: 0.08em; color: rgba(242, 232, 216, 0.45);
-    background: rgba(24, 32, 46, 0.55); border: 1px solid rgba(216, 178, 110, 0.18);
-    border-radius: 999px; padding: 8px 16px; cursor: pointer;
+  #subtitle b { font-weight: 600; } /* per-day accent set from JS */
+  #corner { bottom: 18px; left: 18px; display: flex; gap: 10px; }
+  #replay, #skip {
+    font-family: 'Archivo', system-ui, sans-serif; font-size: 11px; font-weight: 600;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: rgba(242,237,227,0.5); background: rgba(12,17,22,0.55);
+    border: 1px solid rgba(242,237,227,0.14); border-radius: 999px;
+    padding: 9px 16px; cursor: pointer; text-decoration: none;
+    transition: color 0.3s, border-color 0.3s;
   }
-  #replay:hover { color: rgba(242, 232, 216, 0.8); border-color: rgba(216, 178, 110, 0.4); }
+  #replay:hover, #skip:hover { color: #DFAE5A; border-color: rgba(223,174,90,0.5); }
+  #replay:focus-visible, #skip:focus-visible, #schedule-btn:focus-visible { outline: 2px solid #DFAE5A; outline-offset: 3px; }
   #sig {
-    bottom: 20px; right: 24px; font-family: "Cormorant Garamond", serif; font-style: italic;
-    font-size: 17px; color: rgba(216, 178, 110, 0.5); pointer-events: none;
+    bottom: 20px; right: 24px; font-family: 'Bodoni Moda', 'Didot', serif; font-style: italic; font-weight: 550;
+    font-size: 17px; color: rgba(223,174,90,0.55); pointer-events: none;
   }
   #schedule-btn {
     bottom: 7vh; left: 50%; transform: translateX(-50%) translateY(24px);
-    font-family: "Jost", sans-serif; font-weight: 500; letter-spacing: 0.05em;
-    font-size: clamp(15px, 1.4vw, 19px);
-    color: #171207; background: linear-gradient(180deg, #E8CB94, #CBA25E);
-    border-radius: 999px; padding: 15px 34px; text-decoration: none;
-    box-shadow: 0 10px 34px rgba(216, 178, 110, 0.28), inset 0 1px 0 rgba(255, 245, 220, 0.5);
+    font-weight: 650; letter-spacing: 0.24em; text-transform: uppercase;
+    font-size: 11.5px;
+    color: #0C1116; background: #DFAE5A;
+    border-radius: 999px; padding: 16px 30px; text-decoration: none;
+    box-shadow: 0 10px 34px rgba(223, 174, 90, 0.25);
     opacity: 0; pointer-events: none; transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.2, 1.4, 0.4, 1);
   }
   #schedule-btn.show { opacity: 1; pointer-events: auto; transform: translateX(-50%) translateY(0); }
-  #schedule-btn:hover { color: #000000; filter: brightness(1.05); }
+  #schedule-btn.show:hover { transform: translateX(-50%) translateY(-2px); }
+  @media (prefers-reduced-motion: reduce) { #schedule-btn { transition: opacity 0.3s ease; } }
 </style>
 </head>
 <body>
 <div id="stage"></div>
+<div id="grain" aria-hidden="true"></div>
 <div class="ui" id="title">
   <p id="eyebrow">The Official Honeymoon Itinerary</p>
   <h1>San Diego <em>for Katie</em></h1>
-  <p id="subtitle">Six days, six surprises &mdash; tap <b>Tuesday</b> to begin</p>
+  <p id="subtitle">Six days, six surprises &mdash; tap <b style="color:#DFAE5A">Tuesday</b> to begin</p>
 </div>
-<button class="ui" id="replay" title="Start over">&#8634; Replay</button>
+<div class="ui" id="corner">
+  <button id="replay" title="Start over">&#8634; Replay</button>
+  <a id="skip" href="../">Skip to the plan &rarr;</a>
+</div>
 <div class="ui" id="sig">xoxo, your husband</div>
 <a class="ui" id="schedule-btn" href="../">Now &mdash; the whole plan &rarr;</a>
 
@@ -153,7 +173,10 @@ const TILE_W = 1.7, GAP = 0.5;
 const ROW_W = DAYS.length * TILE_W + (DAYS.length - 1) * GAP;
 const xOf = i => -ROW_W / 2 + TILE_W / 2 + i * (TILE_W + GAP);
 const HOVER_Y = 1.62;
-const GOLD = 0xD8B26E, IVORY = 0xF2E8D8;
+const GOLD = 0xDFAE5A, IVORY = 0xF2EDE3;
+/* the reel's per-day accent lighting, Tue…Sun — same hexes as schedule-data */
+const ACCENTS = [0xDFAE5A, 0xE59CB0, 0x6BC6D6, 0xB79BD8, 0xE4764F, 0x92B4C6];
+const accHex = i => '#' + ACCENTS[i].toString(16).padStart(6, '0').toUpperCase();
 
 const stage = document.getElementById('stage');
 const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
@@ -224,13 +247,14 @@ function makeLabel(text) {
   const tex = new THREE.CanvasTexture(cv);
   tex.colorSpace = THREE.SRGBColorSpace;
   tex.anisotropy = 4;
+  let fill = '#C9B896';
   const draw = () => {
     const g = cv.getContext('2d');
     g.clearRect(0, 0, 512, 128);
-    g.font = '500 56px "Jost", sans-serif';
+    g.font = '600 48px "Archivo", sans-serif';
     g.textAlign = 'center'; g.textBaseline = 'middle';
-    g.fillStyle = '#C9B896';
-    const label = text.toUpperCase().split('').join('\u200A');
+    g.fillStyle = fill;
+    const label = text.toUpperCase().split('').join('\u2009\u200A');
     g.fillText(label, 256, 68);
     tex.needsUpdate = true;
   };
@@ -241,6 +265,7 @@ function makeLabel(text) {
     new THREE.MeshBasicMaterial({ map: tex, transparent: true })
   );
   m.rotation.x = -Math.PI / 2;
+  m.userData.setColor = c => { fill = c; draw(); };
   return m;
 }
 
@@ -253,11 +278,11 @@ function qTexture() {
   const draw = () => {
     g.clearRect(0, 0, 256, 256);
     const grd = g.createRadialGradient(128, 128, 10, 128, 128, 122);
-    grd.addColorStop(0, 'rgba(232, 203, 148, 0.85)');
-    grd.addColorStop(0.5, 'rgba(216, 178, 110, 0.22)');
-    grd.addColorStop(1, 'rgba(216, 178, 110, 0)');
+    grd.addColorStop(0, 'rgba(238, 205, 138, 0.85)');
+    grd.addColorStop(0.5, 'rgba(223, 174, 90, 0.22)');
+    grd.addColorStop(1, 'rgba(223, 174, 90, 0)');
     g.fillStyle = grd; g.fillRect(0, 0, 256, 256);
-    g.font = '600 150px "Cormorant Garamond", serif';
+    g.font = 'italic 600 150px "Bodoni Moda", serif';
     g.textAlign = 'center'; g.textBaseline = 'middle';
     g.lineWidth = 9; g.strokeStyle = 'rgba(94, 66, 22, 0.9)';
     g.strokeText('?', 128, 132);
@@ -916,14 +941,14 @@ function buildCoffee() {
 const tiles = DAYS.map((d, i) => {
   const root = new THREE.Group();
   root.position.x = xOf(i);
-  const tileM = new THREE.MeshStandardMaterial({ color: 0x222E40, roughness: 0.55, emissive: GOLD, emissiveIntensity: 0 });
+  const tileM = new THREE.MeshStandardMaterial({ color: 0x1E2A38, roughness: 0.55, emissive: ACCENTS[i], emissiveIntensity: 0 });
   const tile = new THREE.Mesh(new THREE.BoxGeometry(TILE_W, 0.14, TILE_W), tileM);
   tile.position.y = 0.07;
   tile.castShadow = true; tile.receiveShadow = true;
   root.add(tile);
   const trim = new THREE.Mesh(
     new THREE.BoxGeometry(TILE_W + 0.06, 0.03, TILE_W + 0.06),
-    mat(GOLD, { roughness: 0.35, metalness: 0.4, flatShading: false })
+    mat(ACCENTS[i], { roughness: 0.35, metalness: 0.4, flatShading: false })
   );
   trim.position.y = 0.015;
   trim.receiveShadow = true;
@@ -935,7 +960,7 @@ const tiles = DAYS.map((d, i) => {
   hit.position.y = 1.5;
   root.add(hit);
   scene.add(root);
-  const rec = { i, root, tile, tileM, hit, mystery: null, model: null, state: i === 0 ? 'next' : 'locked', floatPhase: Math.random() * 6, boost: 0 };
+  const rec = { i, root, tile, tileM, hit, label, mystery: null, model: null, state: i === 0 ? 'next' : 'locked', floatPhase: Math.random() * 6, boost: 0 };
   hit.userData.rec = rec;
   makeMystery(rec);
   return rec;
@@ -953,9 +978,9 @@ function sparkTexture() {
   cv.width = 64; cv.height = 64;
   const g = cv.getContext('2d');
   const grd = g.createRadialGradient(32, 32, 0, 32, 32, 30);
-  grd.addColorStop(0, 'rgba(255, 244, 214, 1)');
-  grd.addColorStop(0.4, 'rgba(232, 203, 148, 0.5)');
-  grd.addColorStop(1, 'rgba(232, 203, 148, 0)');
+  grd.addColorStop(0, 'rgba(255, 241, 208, 1)');
+  grd.addColorStop(0.4, 'rgba(223, 174, 90, 0.5)');
+  grd.addColorStop(1, 'rgba(223, 174, 90, 0)');
   g.fillStyle = grd; g.fillRect(0, 0, 64, 64);
   const tex = new THREE.CanvasTexture(cv);
   tex.colorSpace = THREE.SRGBColorSpace;
@@ -973,13 +998,13 @@ for (let i = 0; i < 44; i++) {
   sparks.push({ sp, sm, ph: Math.random() * 10, vy: 0.04 + Math.random() * 0.09 });
 }
 
-/* ---------- confetti (champagne + dusty rose) ---------- */
+/* ---------- confetti (champagne + the week's six day accents) ---------- */
 const confetti = [];
 const confGeo = new THREE.PlaneGeometry(0.09, 0.14);
-const CONF_COLS = [0xD8B26E, 0xF2E8D8, 0xE8CB94, 0xB08D52, 0xC98A8A, 0xF6E7C4];
-function spawnConf(x, y, z, vx, vy, vz, ttl, rain) {
+const CONF_COLS = [0xDFAE5A, 0xF2EDE3, 0xF6E7C4, 0xE59CB0, 0x6BC6D6, 0xB79BD8, 0xE4764F, 0x92B4C6];
+function spawnConf(x, y, z, vx, vy, vz, ttl, rain, color) {
   const m = new THREE.Mesh(confGeo, new THREE.MeshBasicMaterial({
-    color: CONF_COLS[(Math.random() * CONF_COLS.length) | 0],
+    color: color || CONF_COLS[(Math.random() * CONF_COLS.length) | 0],
     side: THREE.DoubleSide, transparent: true,
   }));
   m.position.set(x, y, z);
@@ -990,11 +1015,12 @@ function spawnConf(x, y, z, vx, vy, vz, ttl, rain) {
     rx: (Math.random() - 0.5) * 9, ry: (Math.random() - 0.5) * 9, rz: (Math.random() - 0.5) * 9,
   });
 }
-function burst(x, y, z, n = 46) {
+function burst(x, y, z, n = 46, accent = null) {
   for (let i = 0; i < n; i++) {
     const a = Math.random() * Math.PI * 2, sp = 1 + Math.random() * 2.2;
     spawnConf(x + (Math.random() - 0.5) * 0.3, y, z + (Math.random() - 0.5) * 0.3,
-      Math.cos(a) * sp, 2.6 + Math.random() * 2.6, Math.sin(a) * sp * 0.6, 1.7 + Math.random() * 0.9);
+      Math.cos(a) * sp, 2.6 + Math.random() * 2.6, Math.sin(a) * sp * 0.6, 1.7 + Math.random() * 0.9,
+      false, accent && i % 2 === 0 ? accent : null);
   }
 }
 function rainConfetti() {
@@ -1133,13 +1159,18 @@ function reveal(rec) {
   rec.state = 'revealing';
   popSound();
   chime(rec.i);
+  /* the day's stage light: label, burst, and rim sweep take its accent */
+  rec.label.userData.setColor(accHex(rec.i));
+  const rimFrom = rim.color.clone();
+  const rimTo = new THREE.Color(ACCENTS[rec.i]).lerp(new THREE.Color(0x6E86B8), 0.45);
+  tween(1.1, k => rim.color.copy(rimFrom).lerp(rimTo, k));
   tween(0.7, k => { rec.tileM.emissiveIntensity = (1 - k) * 0.9; });
   const q = rec.mystery;
   tween(0.42, k => {
     q.rotation.y = k * 9;
     q.scale.setScalar(Math.max(0.001, 1 - k));
   });
-  tween(0.05, () => {}, { delay: 0.13, done: () => burst(rec.root.position.x, 0.75, 0) });
+  tween(0.05, () => {}, { delay: 0.13, done: () => burst(rec.root.position.x, 0.75, 0, 46, ACCENTS[rec.i]) });
   const model = (DAYS[rec.i].key && glbClone(DAYS[rec.i].key, DAYS[rec.i].size)) || DAYS[rec.i].build();
   model.position.y = 0.15;
   model.scale.setScalar(0.001);
@@ -1158,9 +1189,9 @@ function reveal(rec) {
       nextIndex++;
       if (nextIndex < DAYS.length) {
         tiles[nextIndex].state = 'next';
-        sub.innerHTML = `Now&hellip; <b>${DAYS[nextIndex].day}</b>`;
+        sub.innerHTML = `Now&hellip; <b style="color:${accHex(nextIndex)}">${DAYS[nextIndex].day}</b>`;
       } else {
-        sub.innerHTML = 'That&rsquo;s the plan, <b>Mrs.</b>';
+        sub.innerHTML = 'That&rsquo;s the plan, <b style="color:#DFAE5A">Mrs.</b>';
         tween(0.05, () => {}, { delay: 0.55, done: () => { fanfare(); rainConfetti(); btn.classList.add('show'); } });
       }
     },
@@ -1169,7 +1200,9 @@ function reveal(rec) {
 
 document.getElementById('replay').addEventListener('click', () => {
   tweens.length = 0;
+  rim.color.set(0x6E86B8);
   tiles.forEach(rec => {
+    rec.label.userData.setColor('#C9B896');
     if (rec.model) { rec.root.remove(rec.model); rec.model = null; }
     rec.state = rec.i === 0 ? 'next' : 'locked';
     rec.root.rotation.z = 0;
@@ -1180,10 +1213,19 @@ document.getElementById('replay').addEventListener('click', () => {
   nextIndex = 0;
   busy = false;
   btn.classList.remove('show');
-  sub.innerHTML = 'Six days, six surprises &mdash; tap <b>Tuesday</b> to begin';
+  sub.innerHTML = 'Six days, six surprises &mdash; tap <b style="color:#DFAE5A">Tuesday</b> to begin';
 });
 
 window.__hm = { revealNext: () => { const rec = tiles[nextIndex]; if (rec && rec.state === 'next' && !busy) reveal(rec); } };
+
+const MOTION_OK = matchMedia('(prefers-reduced-motion: no-preference)').matches;
+addEventListener('keydown', ev => {
+  if (ev.key !== 'Enter' && ev.key !== ' ') return;
+  if (ev.target.closest && ev.target.closest('a, button, input')) return;
+  ev.preventDefault();
+  audio();
+  window.__hm.revealNext();
+});
 
 /* ---------- loop ---------- */
 let last = performance.now(), t = 0;
@@ -1195,8 +1237,8 @@ function animate() {
   t += dt;
   stepTweens(dt);
   stepConfetti(dt);
-  camera.position.x += (mx * 1.0 - camera.position.x) * Math.min(1, dt * 3);
-  camera.position.y += (CAM.y - my * 0.9 - camera.position.y) * Math.min(1, dt * 3);
+  camera.position.x += ((MOTION_OK ? mx : 0) * 1.0 - camera.position.x) * Math.min(1, dt * 3);
+  camera.position.y += (CAM.y - (MOTION_OK ? my : 0) * 0.9 - camera.position.y) * Math.min(1, dt * 3);
   camera.lookAt(0, CAM.ly, 0);
   for (const rec of tiles) {
     if (rec.model) {
