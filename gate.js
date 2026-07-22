@@ -221,7 +221,8 @@
              page asks for it; otherwise unlock in place */
           box.classList.add("kj-success");
           if (AFTER_LOGIN) {
-            setTimeout(() => { location.href = BASE + AFTER_LOGIN; }, motionOK ? 900 : 200);
+            /* let the Admit Two stamp linger long enough to actually read */
+            setTimeout(() => { location.href = BASE + AFTER_LOGIN; }, motionOK ? 2800 : 1200);
           } else {
             setTimeout(() => boot(code, gate), motionOK ? 900 : 0);
           }
