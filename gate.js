@@ -161,60 +161,66 @@
   }
 
   document.addEventListener("DOMContentLoaded", async () => {
+    /* hide page content immediately, but do NOT paint the gate UI yet —
+       returning devices unlock silently, and building the lock screen
+       up front made it flash during page-to-page navigations */
     document.documentElement.classList.add("kj-locked");
     const style = document.createElement("style");
     style.textContent = CSS;
     document.head.appendChild(style);
-    const gate = document.createElement("div");
-    gate.id = "kj-gate";
-    gate.innerHTML = HTML;
-    document.body.appendChild(gate);
-    const msg = gate.querySelector("#kj-msg");
-    const input = gate.querySelector("#kj-pass");
-    const box = gate.querySelector(".kj-box");
 
-    /* wire the form BEFORE any network wait — a fast Enter must never
-       fall through to a native submit */
     let enc = null;
-    gate.querySelector("#kj-form").addEventListener("submit", async ev => {
-      ev.preventDefault();
-      msg.textContent = "";
-      if (!enc) { msg.textContent = "One moment — still loading…"; return; }
-      try {
-        const key = await keyFromPassword(input.value, enc);
-        const code = await decryptWith(key, enc);   // GCM throws on a wrong key
-        try { localStorage.setItem(KEY_STORE, b64e(await crypto.subtle.exportKey("raw", key))); } catch (e) {}
-        /* the Admit Two stamp gets its beat, then the curtain lifts —
-           a fresh login is routed into the reveal ceremony when the
-           page asks for it; otherwise unlock in place */
-        box.classList.add("kj-success");
-        if (AFTER_LOGIN) {
-          setTimeout(() => { location.href = BASE + AFTER_LOGIN; }, motionOK ? 900 : 200);
-        } else {
-          setTimeout(() => boot(code, gate), motionOK ? 900 : 0);
+
+    /* the visible gate is built lazily, only once we know it's needed */
+    function buildGate() {
+      const gate = document.createElement("div");
+      gate.id = "kj-gate";
+      gate.innerHTML = HTML;
+      document.body.appendChild(gate);
+      const msg = gate.querySelector("#kj-msg");
+      const input = gate.querySelector("#kj-pass");
+      const box = gate.querySelector(".kj-box");
+      gate.querySelector("#kj-form").addEventListener("submit", async ev => {
+        ev.preventDefault();
+        msg.textContent = "";
+        if (!enc) { msg.textContent = "One moment — still loading…"; return; }
+        try {
+          const key = await keyFromPassword(input.value, enc);
+          const code = await decryptWith(key, enc);   // GCM throws on a wrong key
+          try { localStorage.setItem(KEY_STORE, b64e(await crypto.subtle.exportKey("raw", key))); } catch (e) {}
+          /* the Admit Two stamp gets its beat, then the curtain lifts —
+             a fresh login is routed into the reveal ceremony when the
+             page asks for it; otherwise unlock in place */
+          box.classList.add("kj-success");
+          if (AFTER_LOGIN) {
+            setTimeout(() => { location.href = BASE + AFTER_LOGIN; }, motionOK ? 900 : 200);
+          } else {
+            setTimeout(() => boot(code, gate), motionOK ? 900 : 0);
+          }
+        } catch (e) {
+          msg.textContent = "Not it — try again.";
+          input.select();
+          box.classList.remove("kj-shake"); void box.offsetWidth; box.classList.add("kj-shake");
         }
-      } catch (e) {
-        msg.textContent = "Not it — try again.";
-        input.select();
-        box.classList.remove("kj-shake"); void box.offsetWidth; box.classList.add("kj-shake");
-      }
-    });
+      });
+      return { gate, msg, input };
+    }
 
     try { enc = await (await fetch(BASE + "schedule-data.enc.json")).json(); }
     catch (e) {
-      msg.textContent = "The itinerary couldn't load — open the site over http, not as a file.";
+      buildGate().msg.textContent = "The itinerary couldn't load — open the site over http, not as a file.";
       return;
     }
 
-    /* silent unlock for a device that has been here before — no stamp,
-       no ceremony, straight through the curtain */
+    /* silent unlock for a device that has been here before — no gate
+       UI at all, just a beat of night background while we decrypt */
     const saved = localStorage.getItem(KEY_STORE);
     if (saved) {
       try {
         const key = await crypto.subtle.importKey("raw", b64d(saved), "AES-GCM", false, ["decrypt"]);
-        return boot(await decryptWith(key, enc), gate);
+        return boot(await decryptWith(key, enc), null);
       } catch (e) { localStorage.removeItem(KEY_STORE); }
     }
-    input.focus();
+    buildGate().input.focus();
   });
 })();
