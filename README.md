@@ -15,7 +15,14 @@ Live at **https://katieandjosiah.info** via GitHub Pages (this repo, branch `mai
   `schedule-data.enc.json` (AES-256-GCM; key derived from the site password with
   PBKDF2-SHA256, 200k iterations). The gate decrypts in the browser, executes the data
   script, then calls each page's `window.__boot()`. The derived key is cached in
-  `localStorage`, so each device is asked only once.
+  `localStorage`, so each device is asked only once. The gate resolves all asset paths
+  relative to its own script URL, so it works from subfolders too.
+- **`reveal/`** — a three.js "sneak peek" ceremony (self-contained; see
+  `reveal/INTEGRATION.md`). **Flow**: a fresh manual login on either page redirects here
+  (`data-after-login="reveal/"` on the gate script tag); six tiles reveal a 3D object per
+  day, then the finale button leads to the main page. Silent unlocks (returning devices)
+  skip the ceremony and go straight to the page they asked for; `/reveal/` stays
+  reachable directly and is gated like everything else.
 - **`photos/`** — all images bundled locally (freely licensed; see `photo-credits.md`).
   Three panels (Allegro, Mister A's, the Spider-Man matinee) intentionally render as
   typographic title cards until personal photos replace them.

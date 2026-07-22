@@ -10,6 +10,13 @@
   const b64d = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
   const b64e = buf => btoa(String.fromCharCode(...new Uint8Array(buf)));
   const motionOK = matchMedia("(prefers-reduced-motion: no-preference)").matches;
+  /* gate.js lives at the site root; derive it so pages in subfolders
+     (like reveal/) find the encrypted data and photos. A page may set
+     data-after-login="reveal/" on this script tag to route fresh
+     manual logins into the reveal ceremony; silent unlocks stay put. */
+  const SCRIPT = document.currentScript;
+  const BASE = new URL(".", SCRIPT.src).href;
+  const AFTER_LOGIN = SCRIPT.dataset.afterLogin || null;
 
   const CSS = `
   html.kj-locked{overflow:hidden}
@@ -116,7 +123,7 @@
   }`;
 
   const HTML = `
-  <img class="kj-bg" src="photos/hero-skyline-dusk.jpg" alt="" aria-hidden="true">
+  <img class="kj-bg" src="${BASE}photos/hero-skyline-dusk.jpg" alt="" aria-hidden="true">
   <div class="kj-scrim" aria-hidden="true"></div>
   <span class="kj-amp" aria-hidden="true">&amp;</span>
   <div class="kj-box">
@@ -166,8 +173,34 @@
     const input = gate.querySelector("#kj-pass");
     const box = gate.querySelector(".kj-box");
 
+    /* wire the form BEFORE any network wait — a fast Enter must never
+       fall through to a native submit */
     let enc = null;
-    try { enc = await (await fetch("schedule-data.enc.json")).json(); }
+    gate.querySelector("#kj-form").addEventListener("submit", async ev => {
+      ev.preventDefault();
+      msg.textContent = "";
+      if (!enc) { msg.textContent = "One moment — still loading…"; return; }
+      try {
+        const key = await keyFromPassword(input.value, enc);
+        const code = await decryptWith(key, enc);   // GCM throws on a wrong key
+        try { localStorage.setItem(KEY_STORE, b64e(await crypto.subtle.exportKey("raw", key))); } catch (e) {}
+        /* the Admit Two stamp gets its beat, then the curtain lifts —
+           a fresh login is routed into the reveal ceremony when the
+           page asks for it; otherwise unlock in place */
+        box.classList.add("kj-success");
+        if (AFTER_LOGIN) {
+          setTimeout(() => { location.href = BASE + AFTER_LOGIN; }, motionOK ? 900 : 200);
+        } else {
+          setTimeout(() => boot(code, gate), motionOK ? 900 : 0);
+        }
+      } catch (e) {
+        msg.textContent = "Not it — try again.";
+        input.select();
+        box.classList.remove("kj-shake"); void box.offsetWidth; box.classList.add("kj-shake");
+      }
+    });
+
+    try { enc = await (await fetch(BASE + "schedule-data.enc.json")).json(); }
     catch (e) {
       msg.textContent = "The itinerary couldn't load — open the site over http, not as a file.";
       return;
@@ -182,23 +215,6 @@
         return boot(await decryptWith(key, enc), gate);
       } catch (e) { localStorage.removeItem(KEY_STORE); }
     }
-
     input.focus();
-    gate.querySelector("#kj-form").addEventListener("submit", async ev => {
-      ev.preventDefault();
-      msg.textContent = "";
-      try {
-        const key = await keyFromPassword(input.value, enc);
-        const code = await decryptWith(key, enc);   // GCM throws on a wrong key
-        try { localStorage.setItem(KEY_STORE, b64e(await crypto.subtle.exportKey("raw", key))); } catch (e) {}
-        /* the Admit Two stamp gets its beat, then the curtain lifts */
-        box.classList.add("kj-success");
-        setTimeout(() => boot(code, gate), motionOK ? 900 : 0);
-      } catch (e) {
-        msg.textContent = "Not it — try again.";
-        input.select();
-        box.classList.remove("kj-shake"); void box.offsetWidth; box.classList.add("kj-shake");
-      }
-    });
   });
 })();

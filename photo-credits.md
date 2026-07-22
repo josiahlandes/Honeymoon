@@ -27,3 +27,12 @@ Every photo on this site is a freely licensed image from Wikimedia Commons, down
 | sat-sunset-cliffs.jpg | Day 5 · finale | Sunset Cliffs at sunset | Sunset Cliffs, San Diego, United States (Unsplash).jpg | Tyler Mullins (Unsplash) | CC0 |
 
 Three panels (Allegro, Mister A's, the Spider-Man matinee) intentionally have no photo yet — they render as typographic title cards until personal photos replace them.
+
+## 3D models (reveal page)
+
+| Model | Author | License |
+|---|---|---|
+| Baseball, Baseball bat | Poly by Google (via poly.pizza) | CC BY 3.0 |
+| Taco, Glass Wine | Kenney (kenney.nl) | CC0 |
+
+Remaining reveal objects are hand-built low-poly geometry, original to this site.
