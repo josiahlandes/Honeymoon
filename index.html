@@ -473,14 +473,13 @@ a{color:inherit}
 </header>
 
 <!-- ================= HERO ================= -->
-<section class="hero" id="top" data-zone="hero" aria-label="San Diego, for Katie">
+<section class="hero" id="top" data-zone="hero" aria-label="San Diego, California">
   <div class="bg" aria-hidden="true">
     <img id="hero-img" src="" alt="" fetchpriority="high">
   </div>
   <div class="hero-copy">
     <p class="eyebrow">The Official Honeymoon Itinerary</p>
-    <h1>San Diego <span class="for">for Katie</span></h1>
-    <p class="hero-sub">Six days. Five sunsets. Two newlyweds. One suspiciously well-organized husband.</p>
+    <h1>San Diego, <span class="for">California</span></h1>
     <p class="hero-meta"><b id="hero-dates"></b></p>
   </div>
   <div class="scroll-cue" aria-hidden="true">scroll</div>
@@ -497,8 +496,6 @@ a{color:inherit}
   <div class="coda-inner" id="coda-inner"></div>
 
   <footer class="footer">
-    <h2 class="rise">That's the plan, Mrs.</h2>
-    <p class="rise">Six days, booked and built with love. And if you dream up something better along the way — just say the word.</p>
     <p class="xoxo rise">xoxo, your husband</p>
     <div class="rise">
       <a class="sched-cta" href="katie-schedule.html">The whole week, at a glance</a>
@@ -517,6 +514,8 @@ window.__boot = () => {
   const pad = i => String(i + 1).padStart(2, "0");
   const esc = s => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;")
     .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  /* descs may mark *emphasis* with asterisks — rendered as italics */
+  const fmt = s => esc(s).replace(/\*([^*]+)\*/g, "<em>$1</em>");
 
   /* ---- accent plumbing: body zone rules generated from data ---- */
   const zoneCSS = DAYS.map((d, i) =>
@@ -557,7 +556,7 @@ window.__boot = () => {
       <div class="ev-copy">
         <p class="ev-time">${esc(ev.time)}</p>
         <h3 class="ev-title">${esc(ev.title)}</h3>
-        <p class="ev-desc">${esc(ev.desc)}</p>
+        <p class="ev-desc">${fmt(ev.desc)}</p>
         ${metaHTML(ev)}
       </div>
     </article>` : `
@@ -565,7 +564,7 @@ window.__boot = () => {
       <div class="type-copy">
         <p class="ev-time">${esc(ev.time)}</p>
         <h3 class="ev-title">${esc(ev.title)}</h3>
-        <p class="ev-desc">${esc(ev.desc)}</p>
+        <p class="ev-desc">${fmt(ev.desc)}</p>
         ${ev.flourish ? `<p class="big-clock">${esc(ev.flourish)}</p>` : ""}
         ${metaHTML(ev)}
       </div>
@@ -601,7 +600,7 @@ window.__boot = () => {
       <div class="coda-ev rise">
         <p class="ev-time">${esc(ev.time)}</p>
         <h3>${esc(ev.title)}</h3>
-        <p class="cd">${esc(ev.desc)}</p>
+        <p class="cd">${fmt(ev.desc)}</p>
       </div>`).join("")}`;
   } else {
     codaSec.dataset.zone = "hero";
